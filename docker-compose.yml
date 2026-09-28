@@ -1,0 +1,53 @@
+name: redes2-lab
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: server
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TLS_COMMON_NAME: server
+    healthcheck:
+      test: ["CMD-SHELL", "nginx -t >/dev/null 2>&1 && iperf3 --version >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    networks:
+      labnet:
+        aliases:
+          - server
+    ports:
+      - "8443:8443/tcp"
+      - "8443:8443/udp"
+    volumes:
+      - tls-data:/etc/nginx/tls
+
+  client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: client
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - labnet
+    volumes:
+      - ./artifacts:/artifacts
+    command: ["sleep", "infinity"]
+
+networks:
+  labnet:
+    driver: bridge
+
+volumes:
+  tls-data:
+

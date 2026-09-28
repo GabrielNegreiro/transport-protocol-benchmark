@@ -1,0 +1,4 @@
+artifacts/*.pcapng
+artifacts/*.log
+artifacts/*.json
+
