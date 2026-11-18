@@ -1,4 +1,4 @@
-# Redes II - transport protocol laboratory
+# transport protocol laboratory
 
 This repository currently contains only the fundamental infrastructure requested for the practical assessment. The experiment scenarios and their analysis have intentionally not been implemented.
 
